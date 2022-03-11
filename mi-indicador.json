@@ -1,0 +1,169 @@
+{
+	"info": {
+		"_postman_id": "7a375a2f-bbeb-4d07-bcd7-c1c2d9c510f3",
+		"name": "Mi indicador",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "UF",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Valor UF mayor que 0\",  () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.serie[0].valor).to.greaterThan(0);",
+							"});",
+							"",
+							"pm.test(\"Cabecera Content-Type header es application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Valida tipo de dato numerico\", () => {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.serie[0].valor).to.be.a(\"number\");",
+							"});",
+							"",
+							"pm.test(\"Valida existencia de campos\", () => {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData).to.have.all.keys('version', 'autor', 'codigo', 'nombre', 'unidad_medida', 'serie');",
+							"});",
+							"",
+							"const schema = {",
+							"   \"properties\":{",
+							"      \"version\":{",
+							"         \"type\":\"string\"",
+							"      },",
+							"      \"autor\":{",
+							"         \"type\":\"string\"",
+							"      },",
+							"      \"codigo\":{",
+							"         \"type\":\"string\"",
+							"      },",
+							"      \"nombre\":{",
+							"         \"type\":\"string\"",
+							"      },",
+							"      \"unidad_medida\":{",
+							"         \"type\":\"string\"",
+							"      },",
+							"      \"serie\":{",
+							"         \"type\":\"array\",",
+							"         \"properties\":{",
+							"            \"fecha\":{",
+							"               \"type\":\"string\"",
+							"            },",
+							"            \"valor\":{",
+							"               \"type\":\"number\"",
+							"            }",
+							"         }",
+							"      }",
+							"   }",
+							"};",
+							"pm.test('Valida esquema', function() {",
+							"  pm.response.to.have.jsonSchema(schema);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "mindicador.cl/api/uf/05-03-2022",
+					"host": [
+						"mindicador",
+						"cl"
+					],
+					"path": [
+						"api",
+						"uf",
+						"05-03-2022"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Api",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Valida existencia de campos\", () => {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData).to.have.all.keys('version', 'autor', 'fecha', 'uf', 'ivp', 'dolar', 'dolar_intercambio', 'euro', 'ipc', 'utm', 'imacec', 'tpm', 'libra_cobre', 'tasa_desempleo', 'bitcoin');",
+							"});",
+							"",
+							"pm.test(\"Tamaño de la respuesta debe ser menor a 2.50 KB\", function () {    ",
+							"    pm.expect(pm.response.responseSize).to.be.lessThan(2500);",
+							"});",
+							"pm.test(\"La fecha de la Api debe ser igual al dia de hoy\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    fechaApi = new Date(Date.parse(jsonData.fecha));",
+							"    fechaHoy = new Date();",
+							"    pm.expect(fechaHoy.getDate()).equals(fechaApi.getDate())",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "mindicador.cl/api/",
+					"host": [
+						"mindicador",
+						"cl"
+					],
+					"path": [
+						"api",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Codigo de estado debe ser 200\", () => {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Tiempo respuesta menor a 1 segundo\", () => {",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+					"});",
+					"",
+					"pm.test(\"Cabecera Content-Type es application/json\", () => {",
+					"  var ct = pm.response.headers.get('Content-Type').split(\";\");",
+					"  pm.expect(ct[0]).to.eql('application/json');",
+					"});",
+					""
+				]
+			}
+		}
+	]
+}
