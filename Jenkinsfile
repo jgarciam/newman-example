@@ -4,7 +4,7 @@ pipeline {
         stage('Newman TEST') {
             steps {
                 nodejs('NodeJS') {
-                	newman run mi-indicador.json
+                	sh "newman run mi-indicador.json"
                 }
             }
         }
